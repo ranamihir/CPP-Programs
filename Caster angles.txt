@@ -1,0 +1,27 @@
+STEERING ARM LENGTH = 3.5 Inches
+100% ACKERMAN
+
+10psi, low
+
+Outer, 44 - 4.53
+Inner, 50 - 4.93
+Average at 210lbs = 3.956 deg
+Average at 140lbs = 5.438 deg
+
+10psi, high
+Outer, 60 - 2.13
+Inner, 65 - 3.10
+Average at 210lbs = 1.866 deg
+Average at 140lbs = 3.345 deg
+
+5psi, low
+Outer, 58 - 2.08
+Inner, 62 - 0.42
+Average at 210lbs = 2.130 deg
+Average at 140lbs = 0.634 deg
+
+5psi, high
+Outer, 54 - 1.58
+Inner, 55 - 1.23
+Average at 210lbs = 1.302 deg
+Average at 140lbs = 1.647 deg
