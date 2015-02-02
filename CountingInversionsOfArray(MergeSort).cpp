@@ -1,12 +1,12 @@
 #include <iostream>
 #include <fstream>
 using namespace std;
-long long sortAndCount(long *, long, long);
-long mergeAndCountSplitInv(long *, long, long, long);
+unsigned long sortAndCount(unsigned long *, unsigned long, unsigned long);
+unsigned long mergeAndCountSplitInv(unsigned long *, unsigned long, unsigned long, unsigned long);
 int main(){
 	ifstream myfile("IntegerArray.txt");
-	long i = 0, n = 100000;
-	long *a = new long[n];
+	unsigned long i = 0, n = 100000;
+	unsigned long *a = new unsigned long[n];
 	while (! myfile.eof()){
   		myfile >> a[i];
   		i++;
@@ -17,9 +17,9 @@ int main(){
 	system("PAUSE");
 	return 0;
 }
-long mergeAndCountSplitInv(long *a, long start, long mid, long end){
-	long i = start, j = mid, k = 0, count = 0;
-	long *c = new long[end-start+1];
+unsigned long mergeAndCountSplitInv(unsigned long *a, unsigned long start, unsigned long mid, unsigned long end){
+	unsigned long i = start, j = mid, k = 0, count = 0;
+	unsigned long *c = new unsigned long[end-start+1];
 	while(i < mid || j <= end){
         if (i == mid){
         	c[k] = a[j];
@@ -48,12 +48,12 @@ long mergeAndCountSplitInv(long *a, long start, long mid, long end){
     delete [] c;
 	return count;
 }
-long long sortAndCount(long *a, long start, long end){
+unsigned long sortAndCount(unsigned long *a, unsigned long start, unsigned long end){
 	if(start == end)
 		return 0;
-	long mid = (start+end)/2;
-	long x = sortAndCount(a, start, mid);
-	long y = sortAndCount(a, mid+1, end);
-	long z = mergeAndCountSplitInv(a, start, mid+1, end);
+	unsigned long mid = (start+end)/2;
+	unsigned long x = sortAndCount(a, start, mid);
+	unsigned long y = sortAndCount(a, mid+1, end);
+	unsigned long z = mergeAndCountSplitInv(a, start, mid+1, end);
 	return x+y+z;
 }
