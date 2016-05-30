@@ -1,7 +1,6 @@
 #include <iostream>
 #include <stack>
 using namespace std;
-
 int braces(string a) {
     stack<char> s;
     int count, n = a.length();
