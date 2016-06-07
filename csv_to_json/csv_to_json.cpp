@@ -46,7 +46,7 @@ class CSVRow {
 };
 istream& operator>>(istream&, CSVRow&);
 void csv_to_vector(ifstream &);
-Json::Value vector_to_json(vector <vector <double> >, double);
+Json::Value vector_to_json(vector <vector <double> >, double, int);
 int main() {
     ifstream file("-DecisionTreeMN-.csv");
     csv_to_vector(file);
@@ -83,7 +83,8 @@ void csv_to_vector(ifstream &file) {
 		}
 		cout << endl;
 	}
-	Json::Value root = vector_to_json(data, 1);
+	int maxDepth = data[0][data[0].size()-2];
+	Json::Value root = vector_to_json(data, 1, maxDepth);
 	cout << root;
 	ofstream outfile;
 	outfile.open("json.txt");
@@ -92,23 +93,25 @@ void csv_to_vector(ifstream &file) {
 	outfile << output;
 	outfile.close();
 }
-Json::Value vector_to_json(vector <vector <double> > data, double id) {
+Json::Value vector_to_json(vector <vector <double> > data, double id, int maxDepth) {
     Json::Value event;
     event["size_"] = (int)data[8][id-1];
     event["id_"] = (int)id;
-    event["nodetype_"] = (data[3][id-1] == 0 ? "CLASSIFICATION_NODE" : "CLASSIFICATION_LEAF");
-    if(event["nodetype_"] == "CLASSIFICATION_NODE"){
-        event["split_"]["splitvalue_"] = (int)data[5][id-1];
+    event["nodeType_"] = (data[3][id-1] == 0 ? "CLASSIFICATION_NODE" : "CLASSIFICATION_LEAF");
+    if(event["nodeType_"] == "CLASSIFICATION_NODE"){
+        event["split_"]["splitValue_"] = (int)data[5][id-1];
         event["split_"]["attr_"] = "attr";
         event["split_"]["score_"] = 0;
         event["split_"]["type_"] = "CLASSIFICATION_NUMERIC_SPLIT";
         event["split_"]["leftNodeSize_"] = (int)data[8][data[6][id-1]-1];
         event["split_"]["rightNodeSize_"] = (int)data[8][data[7][id-1]-1];
-        event["leftChild_"] = vector_to_json(data, data[6][id-1]);
-        event["rightChild_"] = vector_to_json(data, data[7][id-1]);
+        event["leftChild_"] = vector_to_json(data, data[6][id-1], maxDepth);
+        event["rightChild_"] = vector_to_json(data, data[7][id-1], maxDepth);
+        event["maxDepth_"] = maxDepth + 1 - data[0][id-1];
     }
     else{
-        event["label_"] = 0;
+        event["label_"] = data[9][id-1];
+        event["maxDepth_"] = 0;
     }
 	return event;
 }
