@@ -5,9 +5,6 @@
 #include <vector>
 #include <string>
 #include <iomanip>
-#include "dist/json/json.h"
-#include "dist/json/json-forwards.h"
-#include "dist/jsoncpp.cpp"
 #include <fstream>
 using namespace std;
 /*
@@ -46,7 +43,7 @@ class CSVRow {
 };
 istream& operator>>(istream&, CSVRow&);
 void csv_to_vector(ifstream &);
-Json::Value vector_to_json(vector <vector <double> >, double);
+string vector_to_json(vector <vector <double> >, double, int);
 int main() {
     ifstream file("-DecisionTreeMN-.csv");
     csv_to_vector(file);
@@ -83,32 +80,43 @@ void csv_to_vector(ifstream &file) {
 		}
 		cout << endl;
 	}
-	Json::Value root = vector_to_json(data, 1);
-	cout << root;
+	int maxDepth = data[0][data[0].size()-2];
+	string json = vector_to_json(data, 1, maxDepth);
+	cout << json << endl;
 	ofstream outfile;
-	outfile.open("json.txt");
-	Json::FastWriter fastWriter;
-	string output = fastWriter.write(root);
-	outfile << output;
+	outfile.open("json_2.txt");
+	outfile << json;
 	outfile.close();
 }
-Json::Value vector_to_json(vector <vector <double> > data, double id) {
-    Json::Value event;
-    event["size_"] = (int)data[8][id-1];
-    event["id_"] = (int)id;
-    event["nodetype_"] = (data[3][id-1] == 0 ? "CLASSIFICATION_NODE" : "CLASSIFICATION_LEAF");
-    if(event["nodetype_"] == "CLASSIFICATION_NODE"){
-        event["split_"]["splitvalue_"] = (int)data[5][id-1];
-        event["split_"]["attr_"] = "attr";
-        event["split_"]["score_"] = 0;
-        event["split_"]["type_"] = "CLASSIFICATION_NUMERIC_SPLIT";
-        event["split_"]["leftNodeSize_"] = (int)data[8][data[6][id-1]-1];
-        event["split_"]["rightNodeSize_"] = (int)data[8][data[7][id-1]-1];
-        event["leftChild_"] = vector_to_json(data, data[6][id-1]);
-        event["rightChild_"] = vector_to_json(data, data[7][id-1]);
-    }
-    else{
-        event["label_"] = 0;
-    }
-	return event;
+string vector_to_json(vector <vector <double> > data, double id, int maxDepth) {
+    string json = "";
+    stringstream ss;
+    json = (string)"{\"size_\": ";
+	ss << (int)data[8][id-1];
+	json += ss.str() + (string)",\"id_\": ";
+	ss.str(string());
+	ss << (int)id;
+	json += ss.str() + (string)",\"nodeType_\": " + (string)(data[3][id-1] == 0 ? "\"CLASSIFICATION_NODE\"" : "\"CLASSIFICATION_LEAF\"");
+	ss.str(string());
+	if((data[3][id-1] == 0 ? "CLASSIFICATION_NODE" : "CLASSIFICATION_LEAF") == "CLASSIFICATION_NODE") {
+		ss << (int)data[5][id-1];
+		json += (string)",\"split_\": {\"splitValue_\": " + ss.str() + (string)",\"attr_\": \"attr\", \"score_\": 0, \"type_\": \"CLASSIFICATION_NUMERIC_SPLIT\", \"leftNodeSize_\": ";
+		ss.str(string());
+		ss << (int)data[8][data[6][id-1]-1];
+		json += ss.str() + (string)",\"rightNodeSize_\": ";
+		ss.str(string());
+		ss << (int)data[8][data[7][id-1]-1];
+		json += ss.str() + "},\"leftChild_\": "+ vector_to_json(data, data[6][id-1], maxDepth) + ",\"rightChild_\": " + vector_to_json(data, data[7][id-1], maxDepth) + (string)",\"maxDepth_\": ";
+		ss.str(string());
+		ss << maxDepth + 1 - data[0][id-1];
+		json += ss.str();
+		ss.str(string());
+	}
+	else {
+		ss << data[9][id-1];
+		json += (string)",\"label_\": " + ss.str() + (string)",\"maxDepth_\": 0";
+		ss.str(string());
+	}
+	json += (string)"}";
+	return json;
 }
