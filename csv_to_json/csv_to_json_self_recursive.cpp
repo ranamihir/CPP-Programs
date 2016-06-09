@@ -84,7 +84,7 @@ void csv_to_vector(ifstream &file) {
 	string json = vector_to_json(data, 1, maxDepth);
 	cout << json << endl;
 	ofstream outfile;
-	outfile.open("json_2.txt");
+	outfile.open("json_self_recursive.txt");
 	outfile << json;
 	outfile.close();
 }

@@ -87,7 +87,7 @@ void csv_to_vector(ifstream &file) {
 	Json::Value root = vector_to_json(data, 1, maxDepth);
 	cout << root;
 	ofstream outfile;
-	outfile.open("json.txt");
+	outfile.open("json_jsoncpp.txt");
 	Json::FastWriter fastWriter;
 	string output = fastWriter.write(root);
 	outfile << output;
