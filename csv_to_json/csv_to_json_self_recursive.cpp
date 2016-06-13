@@ -5,7 +5,6 @@
 #include <vector>
 #include <string>
 #include <iomanip>
-#include <fstream>
 using namespace std;
 /*
 treelevel = data[0]
@@ -29,7 +28,7 @@ class CSVRow {
             return m_data.size();
         }
         void readNextRow(istream& str) {
-            string         line;
+            string line;
             getline(str, line);
             stringstream lineStream(line);
             string cell;
