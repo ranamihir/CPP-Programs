@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include <iomanip>
+#include <stack>
 using namespace std;
 /*
 treelevel = data[0]
@@ -42,7 +43,8 @@ class CSVRow {
 };
 istream& operator>>(istream&, CSVRow&);
 void csv_to_vector(ifstream &);
-string vector_to_json(vector <vector <double> >, double, int);
+string make_node(vector <vector <double> >, int, vector<string>);
+string vector_to_json(vector <vector <double> >);
 int main() {
     ifstream file("-DecisionTreeMN-.csv");
     csv_to_vector(file);
@@ -79,15 +81,15 @@ void csv_to_vector(ifstream &file) {
 		}
 		cout << endl;
 	}
-	int maxDepth = data[0][data[0].size()-2];
-	string json = vector_to_json(data, 1, maxDepth);
+	string json = vector_to_json(data);
 	cout << json << endl;
 	ofstream outfile;
-	outfile.open("json_self_recursive.txt");
+	outfile.open("json_dtree_iterative.txt");
 	outfile << json;
 	outfile.close();
 }
-string vector_to_json(vector <vector <double> > data, double id, int maxDepth) {
+string make_node(vector <vector <double> > data, int id, vector<string> partial_tree) {
+	int maxDepth = data[0][data[0].size()-2];
     string json = "";
     stringstream ss;
     json = (string)"{\"size_\": ";
@@ -105,7 +107,7 @@ string vector_to_json(vector <vector <double> > data, double id, int maxDepth) {
 		json += ss.str() + (string)",\"rightNodeSize_\": ";
 		ss.str(string());
 		ss << (int)data[8][data[7][id-1]-1];
-		json += ss.str() + "},\"leftChild_\": "+ vector_to_json(data, data[6][id-1], maxDepth) + ",\"rightChild_\": " + vector_to_json(data, data[7][id-1], maxDepth) + (string)",\"maxDepth_\": ";
+		json += ss.str() + "},\"leftChild_\": "+ partial_tree[data, data[6][id-1]] + ",\"rightChild_\": " + partial_tree[data, data[7][id-1]] + (string)",\"maxDepth_\": ";
 		ss.str(string());
 		ss << maxDepth + 1 - data[0][id-1];
 		json += ss.str();
@@ -117,5 +119,32 @@ string vector_to_json(vector <vector <double> > data, double id, int maxDepth) {
 		ss.str(string());
 	}
 	json += (string)"}";
-	return json;
+	return json;	
+}
+string vector_to_json(vector <vector <double> > data) {
+	vector<string> partial_tree (data[0].size()+1);
+	stack<int> s;
+	string t = "";
+	s.push(1);
+	int prev = 0;
+	while (!s.empty()) {
+		int curr = s.top();
+	    if (!prev || data[6][prev-1] == curr || data[7][prev-1] == curr) {
+			if (data[6][curr-1] != -1)
+				s.push(data[6][curr-1]);
+			else if (data[7][curr-1] != -1)
+				s.push(data[7][curr-1]);
+			}
+			else if (data[6][curr-1] == prev) {
+				if (data[7][curr-1])
+					s.push(data[7][curr-1]);
+				}
+			else {
+				t = make_node(data, curr, partial_tree);
+				partial_tree[curr] = t;
+				s.pop();
+			}
+		prev = curr;
+	}
+	return partial_tree[1];
 }

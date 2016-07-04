@@ -8,17 +8,18 @@
 #include <stack>
 using namespace std;
 /*
-treelevel = data[0]
-nodeid = data[1]
-parentnodeid = data[2]
-isleaf = data[3]
-splitvarid = data[4]
-splitval = data[5]
-childnodeleft = data[6]
-childnoderight = data[7]
-nodesize = data[8]
-predictclass = data[9]
-predictclassprob = data[10]
+datasetid = data[0]
+treelevel = data[1]
+nodeid = data[2]
+parentnodeid = data[3]
+isleaf = data[4]
+splitvarid = data[5]
+splitval = data[6]
+childnodeleft = data[7]
+childnoderight = data[8]
+nodesize = data[9]
+predictclass = data[10]
+predictclassprob = data[11]
 */
 class CSVRow {
     public:
@@ -46,7 +47,7 @@ void csv_to_vector(ifstream &);
 string make_node(vector <vector <double> >, int, vector<string>);
 string vector_to_json(vector <vector <double> >);
 int main() {
-    ifstream file("-DecisionTreeMN-.csv");
+    ifstream file("randomForest.csv");
     csv_to_vector(file);
 }
 istream& operator>>(istream& str, CSVRow& data) {
@@ -58,8 +59,9 @@ void csv_to_vector(ifstream &file) {
     double input;
     CSVRow row;
 	file >> row;
-	int n = row.size(), i;
+	int n = row.size(), i, j;
     vector<vector <double> > data (n-1);
+    string tree = "";
     while(file >> row) {
 		i = 1;
 		while(i < n) {
@@ -81,11 +83,30 @@ void csv_to_vector(ifstream &file) {
 		}
 		cout << endl;
 	}
-	string json = vector_to_json(data);
-	cout << json << endl;
+	vector<string> randomforest;
+	int prev = 0, curr = 0, tree_num = 1, m = data[0].size();
+	while(curr < m) {
+		if(tree_num != data[0][curr] || curr == m-1) {
+			if(curr == m-1)
+				curr++;
+			vector<vector<double> > tree_vector;
+			for(int i = 1; i < 12; i++) {
+				vector<double> temp(data[i].begin()+prev, data[i].begin()+curr);
+				tree_vector.push_back(temp);
+			}
+			string json = vector_to_json(tree_vector);
+			tree += json + (string)"\n";
+			cout << json << endl;
+			randomforest.push_back(json);
+			tree_num++;
+			prev = curr;
+		}
+		else if(tree_num == data[0][curr])
+			curr++;
+	}
 	ofstream outfile;
-	outfile.open("json_self_iterative.txt");
-	outfile << json;
+	outfile.open("json_random_forest_iterative.txt");
+	outfile << tree;
 	outfile.close();
 }
 string make_node(vector <vector <double> > data, int id, vector<string> partial_tree) {
@@ -119,7 +140,7 @@ string make_node(vector <vector <double> > data, int id, vector<string> partial_
 		ss.str(string());
 	}
 	json += (string)"}";
-	return json;	
+	return json;
 }
 string vector_to_json(vector <vector <double> > data) {
 	vector<string> partial_tree (data[0].size()+1);
