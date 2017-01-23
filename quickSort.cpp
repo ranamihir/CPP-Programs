@@ -25,24 +25,24 @@ void swap(int *a, int pos1, int pos2) {
 }
 
 int partition(int *a, int left, int right, int pivot) {
-	int leftPointer = left -1, rightPointer = right;
+	int leftPtr = left -1, rightPtr = right;
 	
 	while(1) {
-		while(a[++leftPointer] < pivot) {
+		while(a[++leftPtr] < pivot) {
 		}
 		
-		while(rightPointer > 0 && a[--rightPointer] > pivot) {
+		while(rightPtr > 0 && a[--rightPtr] > pivot) {
       	}
 
-      	if(leftPointer >= rightPointer) {
+      	if(leftPtr >= rightPtr) {
 	  		break;
       	} else {
-		  	swap(a, leftPointer, rightPointer);
+		  	swap(a, leftPtr, rightPtr);
       	}
    }
    
-   swap(a, leftPointer, right);
-   return leftPointer;
+   swap(a, leftPtr, right);
+   return leftPtr;
 }
 
 void quickSort(int *a, int left, int right) {
@@ -50,8 +50,8 @@ void quickSort(int *a, int left, int right) {
 		return;   
    	} else {
 	   int pivot = a[right];
-	   int partitionPoint = partition(a, left, right, pivot);
-       quickSort(a, left, partitionPoint-1);
-       quickSort(a, partitionPoint+1, right);
+	   int partPt = partition(a, left, right, pivot);
+       quickSort(a, left, partPt-1);
+       quickSort(a, partPt+1, right);
 	}
 }
