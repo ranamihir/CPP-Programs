@@ -24,34 +24,24 @@ void swap(int *a, int pos1, int pos2) {
    a[pos2] = temp;
 }
 
-int partition(int *a, int left, int right, int pivot) {
-	int leftPtr = left -1, rightPtr = right;
-	
-	while(1) {
-		while(a[++leftPtr] < pivot) {
+int partition(int *a, int left, int right) {
+	int pivot = a[right], pIndex = left;
+	for(int i = left; i < right; i++) {
+		if(a[i] <= pivot) {
+			swap(a[i], a[pIndex]);
+			pIndex++;
 		}
-		
-		while(rightPtr > 0 && a[--rightPtr] > pivot) {
-      	}
-
-      	if(leftPtr >= rightPtr) {
-	  		break;
-      	} else {
-		  	swap(a, leftPtr, rightPtr);
-      	}
-   }
-   
-   swap(a, leftPtr, right);
-   return leftPtr;
+	}
+   swap(a, pIndex, right);
+   return pIndex;
 }
 
 void quickSort(int *a, int left, int right) {
-	if(right-left <= 0) {
-		return;   
-   	} else {
-	   int pivot = a[right];
-	   int partPt = partition(a, left, right, pivot);
-       quickSort(a, left, partPt-1);
-       quickSort(a, partPt+1, right);
+	if(left >= right)
+		return;
+	else {
+	   int pIndex = partition(a, left, right);
+       quickSort(a, left, pIndex-1);
+       quickSort(a, pIndex+1, right);
 	}
 }
