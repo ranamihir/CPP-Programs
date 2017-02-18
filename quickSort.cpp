@@ -28,7 +28,7 @@ int partition(int *a, int left, int right) {
 	int pivot = a[right], pIndex = left;
 	for(int i = left; i < right; i++) {
 		if(a[i] <= pivot) {
-			swap(a[i], a[pIndex]);
+			swap(a, i, pIndex);
 			pIndex++;
 		}
 	}
@@ -39,9 +39,7 @@ int partition(int *a, int left, int right) {
 void quickSort(int *a, int left, int right) {
 	if(left >= right)
 		return;
-	else {
-	   int pIndex = partition(a, left, right);
-       quickSort(a, left, pIndex-1);
-       quickSort(a, pIndex+1, right);
-	}
+   int pIndex = partition(a, left, right);
+   quickSort(a, left, pIndex-1);
+   quickSort(a, pIndex+1, right);
 }
