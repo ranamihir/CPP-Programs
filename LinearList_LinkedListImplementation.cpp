@@ -37,6 +37,8 @@ int main() {
 		a.Insert(i, i);
 	cout << "Display(): ";
 	a.Display();
+	cout << "Length: " << a.Length() << endl;
+	cout << "Empty: " << a.Empty() << endl;
 	cout << "Insert(1, 20)" << endl;
 	cout << "Display(): ";
 	a.Insert(1, 20);
@@ -44,8 +46,13 @@ int main() {
 	a.Find(2, temp);
 	cout << "Find(2): " << temp << endl;
 	cout << "Search(2): " << a.Search(2) << endl;
-	cout << "Delete(2): ";
-	a.Delete(2, temp);
+	cout << "Delete(3): ";
+	a.Delete(3, temp);
+	cout << temp << endl;
+	a.Display();
+	cout << "Delete(1): ";
+	a.Delete(1, temp);
+	cout << temp << endl;
 	a.Display();
 	
 	return 0;
@@ -138,6 +145,7 @@ template<class T> Chain<T>& Chain<T>::Delete(int k, T &x) {
 		}
 		if(q) {
 			p->link = q->link;
+			x = q->data;
 			delete q;
 		}
 		else {
@@ -146,9 +154,9 @@ template<class T> Chain<T>& Chain<T>::Delete(int k, T &x) {
 		}
 	}
 	else {
+		x = first->data;
 		first = first->link;
 		delete p;
-		delete q;
 	}
 	return *this;
 }

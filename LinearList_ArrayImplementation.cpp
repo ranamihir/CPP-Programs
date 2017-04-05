@@ -23,12 +23,14 @@ class LinearList {
 int main() {
 	int temp = 0;
 	LinearList<int> a(100);
-	for(int i = 0; i < 10; i++)
-		a.Push(i);
 	cout << "Length: " << a.Length() << endl;
 	cout << "Empty: " << a.Empty() << endl;
+	for(int i = 0; i < 10; i++)
+		a.Push(i);
 	cout << "Display(): ";
 	a.Display();
+	cout << "Length: " << a.Length() << endl;
+	cout << "Empty: " << a.Empty() << endl;
 	cout << "Insert(1, 20)" << endl;
 	cout << "Display(): ";
 	a.Insert(1, 20);
@@ -36,8 +38,13 @@ int main() {
 	a.Find(2, temp);
 	cout << "Find(2): " << temp << endl;
 	cout << "Search(2): " << a.Search(2) << endl;
-	cout << "Delete(2): ";
-	a.Delete(2, temp);
+	cout << "Delete(3): ";
+	a.Delete(3, temp);
+	cout << temp << endl;
+	a.Display();
+	cout << "Delete(1): ";
+	a.Delete(1, temp);
+	cout << temp << endl;
 	a.Display();
 	
 	return 0;
@@ -59,7 +66,7 @@ template<class T> bool LinearList<T>::Find(int k, T &x) const {
 template<class T> int LinearList<T>::Search(const T &x) const {
 	for(int i = 0; i < length; i++)
 		if(element[i] == x)
-			return i;
+			return ++i;
 	return -1;
 }
 
