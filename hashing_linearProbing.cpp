@@ -7,7 +7,7 @@ class HashTable {
 		HashTable(int);
 		~HashTable();
 		bool Search(const K &, E &) const;
-		void Insert(const E &);
+		bool Insert(const E &);
 	private:
 		int d;
 		int hSearch(const K &) const;
@@ -22,8 +22,11 @@ int main() {
 	int a[] = {83, 14, 29, 70, 10, 55, 72, 45, 11, 67, 90, 24, 3, 72, 46};
 	int length = sizeof(a)/sizeof(a[0]);
 	
-	for(int i = 0; i < length; i++)
-		ht->Insert(a[i]);
+	for(int i = 0; i < length; i++) {
+		cout << "Inserting " << a[i] << "... ";
+		cout << (ht->Insert(a[i]) ? " Done.\n" : "");
+			
+	}
 
 	for(int i = 0; i < length; i++) {
 		int s = a[i];
@@ -72,20 +75,20 @@ bool HashTable<E, K>::Search(const K &k, E &e) const {
 }
 
 template<class E, class K>
-void HashTable<E, K>::Insert(const E &e) {
+bool HashTable<E, K>::Insert(const E &e) {
 	K k = e;
 	int b = hSearch(k);
 	if(empty[b]) {
 		empty[b] = false;
 		ht[b] = e;
-		return;
+		return true;
 	}
 	
 	if(ht[b] == k) {
 		cout << "Error: Duplicate input." << endl << "Cannot insert " << e << "." << endl;
-		return;
+		return false;
 	}
 	
 	cout << "Error: No memory." << endl << "Cannot insert " << e << "." << endl;
-	return;
+	return false;
 }
